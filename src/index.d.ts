@@ -19,6 +19,13 @@ declare namespace esb {
         query(query: Query): this;
 
         /**
+         * Sets knn on the request body.
+         *
+         * @param {Knn} knn
+         */
+        knn(knn: Knn | Knn[]): this;
+
+        /**
          * Sets aggregation on the request body.
          * Alias for method `aggregation`
          *
@@ -3074,7 +3081,7 @@ declare namespace esb {
 
         /**
          * Sets the script used to compute the score of documents returned by the query.
-         * 
+         *
          * @param {Script} script A valid `Script` object
          */
         script(script: Script): this;
@@ -3613,6 +3620,84 @@ declare namespace esb {
         field?: string,
         spanQry?: SpanQueryBase
     ): SpanFieldMaskingQuery;
+
+    /**
+     * Knn performs k-nearest neighbor (KNN) searches.
+     * This class allows configuring the KNN search with various parameters such as field, query vector,
+     * number of nearest neighbors (k), number of candidates, boost factor, and similarity metric.
+     *
+     * NOTE: Only available in Elasticsearch v8.0+
+     */
+    export class Knn {
+        /**
+         * Creates an instance of Knn, initializing the internal state for the k-NN search.
+         *
+         * @param {string} field - (Optional) The field against which to perform the k-NN search.
+         * @param {number} k - (Optional) The number of nearest neighbors to retrieve.
+         * @param {number} numCandidates - (Optional) The number of candidate neighbors to consider during the search.
+         * @throws {Error} If the number of candidates (numCandidates) is less than the number of neighbors (k).
+         */
+        constructor(field: string, k: number, numCandidates: number);
+
+        /**
+         * Sets the query vector for the KNN search, an array of numbers representing the reference point.
+         *
+         * @param {number[]} vector
+         */
+        queryVector(vector: number[]): this;
+
+        /**
+         * Sets the query vector builder for the k-NN search.
+         * This method configures a query vector builder using a specified model ID and model text.
+         * Note that either a direct query vector or a query vector builder can be provided, but not both.
+         *
+         * @param {string} modelId - The ID of the model used for generating the query vector.
+         * @param {string} modelText - The text input based on which the query vector is generated.
+         * @throws {Error} If both query_vector_builder and query_vector are provided.
+         * @returns {Knn} Returns the instance of Knn for method chaining.
+         */
+        queryVectorBuilder(modelId: string, modelText: string): this;
+
+        /**
+         * Adds one or more filter queries to the k-NN search.
+         * This method is designed to apply filters to the k-NN search. It accepts either a single
+         * query or an array of queries. Each query acts as a filter, refining the search results
+         * according to the specified conditions. These queries must be instances of the `Query` class.
+         *
+         * @param {Query|Query[]} queries - A single `Query` instance or an array of `Query` instances for filtering.
+         * @returns {Knn} Returns `this` to allow method chaining.
+         * @throws {TypeError} If any of the provided queries is not an instance of `Query`.
+         */
+        filter(queries: Query | Query[]): this;
+
+        /**
+         * Applies a boost factor to the query to influence the relevance score of returned documents.
+         *
+         * @param {number} boost
+         */
+        boost(boost: number): this;
+
+        /**
+         * Sets the similarity metric used in the KNN algorithm to calculate similarity.
+         *
+         * @param {number} similarity
+         */
+        similarity(similarity: number): this;
+
+        /**
+         * Override default `toJSON` to return DSL representation for the `query`
+         *
+         * @override
+         */
+        toJSON(): object;
+    }
+
+    /**
+     * Factory function to instantiate a new Knn object.
+     *
+     * @returns {Knn}
+     */
+    export function knn(field: string, k: number, numCandidates: number): Knn;
 
     /**
      * Base class implementation for all aggregation types.
