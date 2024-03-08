@@ -14,6 +14,7 @@ const {
     InnerHits,
     SearchTemplate,
     Query,
+    Knn,
     util: { constructorWrapper }
 } = require('./core');
 
@@ -341,6 +342,13 @@ exports.spanWithinQuery = constructorWrapper(SpanWithinQuery);
 
 exports.SpanFieldMaskingQuery = SpanFieldMaskingQuery;
 exports.spanFieldMaskingQuery = constructorWrapper(SpanFieldMaskingQuery);
+
+/* ============ ============ ============ */
+/* ======== Knn ======== */
+/* ============ ============ ============ */
+exports.Knn = Knn;
+exports.knn = constructorWrapper(Knn);
+
 /* ============ ============ ============ */
 /* ======== Metrics Aggregations ======== */
 /* ============ ============ ============ */

@@ -10,7 +10,8 @@ const Query = require('./query'),
     Rescore = require('./rescore'),
     Sort = require('./sort'),
     Highlight = require('./highlight'),
-    InnerHits = require('./inner-hits');
+    InnerHits = require('./inner-hits'),
+    Knn = require('./knn');
 
 const { checkType, setDefault, recursiveToJSON } = require('./util');
 
@@ -69,6 +70,7 @@ class RequestBodySearch {
     constructor() {
         // Maybe accept some optional parameter?
         this._body = {};
+        this._knn = [];
         this._aggs = [];
         this._suggests = [];
         this._suggestText = null;
@@ -84,6 +86,21 @@ class RequestBodySearch {
         checkType(query, Query);
 
         this._body.query = query;
+        return this;
+    }
+
+    /**
+     * Sets knn on the search request body.
+     *
+     * @param {knn} knn
+     * @returns {RequestBodySearch} returns `this` so that calls can be chained.
+     */
+    knn(knn) {
+        const knns = Array.isArray(knn) ? knn : [knn];
+        knns.forEach(_knn => {
+            checkType(_knn, Knn);
+            this._knn.push(_knn);
+        });
         return this;
     }
 
@@ -784,6 +801,8 @@ class RequestBodySearch {
      */
     toJSON() {
         const dsl = recursiveToJSON(this._body);
+
+        if (!isEmpty(this._knn)) dsl.knn = this._knn;
 
         if (!isEmpty(this._aggs)) dsl.aggs = recMerge(this._aggs);
 
