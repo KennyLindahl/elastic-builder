@@ -1,6 +1,6 @@
 {
-  "name": "elastic-builder",
-  "version": "0.0.0-development",
+  "name": "@kennylindahl/elastic-builder",
+  "version": "2.19.0",
   "description": "A JavaScript implementation of the elasticsearch Query DSL",
   "main": "src/index.js",
   "files": [
@@ -10,7 +10,7 @@
   ],
   "types": "./src/index.d.ts",
   "scripts": {
-    "build:umd": "webpack src --output browser/elastic-builder.min.js --mode production",
+    "build:umd": "NODE_OPTIONS=--openssl-legacy-provider webpack src --output browser/elastic-builder.min.js --mode production",
     "build:docs": "documentation build src/index.js --github -o docs -f html -c ./docs/documentation.yml",
     "build": "npm run build:umd && npm run build:docs",
     "lint": "eslint src test",
